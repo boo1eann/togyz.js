@@ -31,6 +31,20 @@ class Togyz {
     let tempSide = side;
     this.board[side][pit] = 0;
 
+    if (stones === 0) return;
+
+    if (stones === 1) {
+      if (tempPit === 8) {
+        tempSide = Number(!tempSide) as Side;
+        this.board[tempSide][0]++;
+        return;
+      } else {
+        tempPit++;
+        this.board[tempSide][tempPit]!++;
+        return;
+      }
+    }
+
     for (let i = 0; i < stones; i++) {
       if (tempPit <= 8) {
         this.board[tempSide][tempPit]++;
@@ -52,13 +66,22 @@ class Togyz {
   }
 
   ascii() {
-    let output = "";
-    for (const side of this.board) {
-      for (const pit of side) {
-        output += `${pit} `;
-      }
-    }
-    return output;
+    const a = [...this.board[0]].reverse() as unknown as Pits;
+    const b = [...this.board[1]] as unknown as Pits;
+
+    const colWidths: any[] = [];
+
+    [a, b].forEach((row) => {
+      row.forEach((pit, i) => {
+        colWidths[i] = Math.max(colWidths[i] || 0, String(pit).length);
+      });
+    });
+
+    const formatRow = (row: Pits) =>
+      row.map((pit, i) => String(pit).padStart(colWidths[i], " ")).join(" | ");
+
+    console.log(formatRow(a));
+    console.log(formatRow(b));
   }
 }
 
@@ -72,4 +95,8 @@ console.log(togyz.ascii());
 togyz.move(0, 0);
 console.log(togyz.ascii());
 togyz.move(0, 0);
+console.log(togyz.ascii());
+togyz.move(1, 8);
+console.log(togyz.ascii());
+togyz.move(0, 1);
 console.log(togyz.ascii());
